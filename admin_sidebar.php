@@ -77,7 +77,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     background-color: #e53935;
 }
 
-
 .sidebar a.logout:hover {
     background-color: #c62828;
 }
