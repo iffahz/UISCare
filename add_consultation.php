@@ -1,4 +1,3 @@
-```php
 <?php
 
 require_once "counselor_check.php";
@@ -8,22 +7,12 @@ $counselor_id = $_SESSION['user_id'];
 $message = "";
 $message_type = "";
 
-
-// =========================================
-// HANDLE BOOK APPOINTMENT
-// =========================================
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $student_id = $_POST['student_id'] ?? '';
     $appointment_date = $_POST['appointment_date'] ?? '';
     $appointment_time = $_POST['appointment_time'] ?? '';
     $reason = trim($_POST['reason'] ?? '');
-
-
-    // =====================================
-    // CHECK REQUIRED FIELDS
-    // =====================================
 
     if (
         empty($student_id) ||
@@ -37,11 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     } else {
 
-
-        // =====================================
-        // CHECK DATE
-        // =====================================
-
         $date_timestamp = strtotime($appointment_date);
 
         if ($date_timestamp === false) {
@@ -53,11 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $day_of_week = date('N', $date_timestamp);
 
-
-            // =====================================
-            // CHECK WEEKEND
-            // =====================================
-
             if ($day_of_week >= 6) {
 
                 $message =
@@ -67,21 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             } else {
 
-
-                // =====================================
-                // NORMALIZE TIME
-                // =====================================
-
                 $appointment_time =
                     date(
                         'H:i:s',
                         strtotime($appointment_time)
                     );
-
-
-                // =====================================
-                // ALLOWED TIME SLOTS
-                // =====================================
 
                 $allowed_slots = [];
 
@@ -132,11 +101,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 }
 
-
-                // =====================================
-                // CHECK VALID TIME SLOT
-                // =====================================
-
                 if (
                     !in_array(
                         $appointment_time,
@@ -150,11 +114,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $message_type = "error";
 
                 } else {
-
-
-                    // =====================================
-                    // CHECK STUDENT
-                    // =====================================
 
                     $student_check = $conn->prepare("
 
@@ -189,11 +148,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $message_type = "error";
 
                     } else {
-
-
-                        // =====================================
-                        // CHECK SLOT ALREADY BOOKED
-                        // =====================================
 
                         $check = $conn->prepare("
 
@@ -232,11 +186,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             $message_type = "error";
 
                         } else {
-
-
-                            // =====================================
-                            // INSERT APPOINTMENT
-                            // =====================================
 
                             $insert = $conn->prepare("
 
@@ -301,11 +250,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 }
 
-
-// =========================================
-// GET STUDENTS
-// =========================================
-
 $students_sql = "
 
     SELECT
@@ -330,11 +274,6 @@ $students_stmt->execute();
 
 $students =
     $students_stmt->get_result();
-
-
-// =========================================
-// GET EXISTING APPOINTMENTS
-// =========================================
 
 $existing_sql = "
 
@@ -404,353 +343,169 @@ while (
 
     <title>Book Appointment</title>
 
-
     <style>
 
         * {
             box-sizing: border-box;
         }
-
-
         body {
-
             margin: 0;
-
             font-family: Arial, sans-serif;
-
             background-color: #dbeafe;
-
             color: #333;
-
         }
-
- /* =====================================
-   SIDEBAR
-===================================== */
-
-.navbar {
-    position: fixed;
-    left: 0;
-    top: 0;
-
-    width: 220px;
-    height: 100vh;
-
-    background-color: #0f4c81;
-
-    padding: 25px 0;
-
-    display: flex;
-    flex-direction: column;
-
-    z-index: 1000;
-}
-
-
-/* LOGO */
-
-.logo {
-    width: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-bottom: 35px;
-}
-
-.logo img {
-    width: 150px;
-    height: auto;
-
-    display: block;
-}
-
-
-/* MENU */
-
-.menu {
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 12px;
-}
-
-.menu a {
-    width: 180px;
-
-    margin: 0 auto;
-
-    padding: 12px 18px;
-
-    color: white;
-
-    text-decoration: none;
-
-    border-radius: 8px;
-
-    font-size: 15px;
-}
-
-.menu a:hover,
-.menu a.active {
-    background-color: #1e88e5;
-}
-
-
-/* LOGOUT */
-
-.navbar > .logout {
-    width: 180px;
-
-    margin-top: auto;
-    margin-left: auto;
-    margin-right: auto;
-
-    padding: 12px 18px;
-
-    text-align: center;
-
-    background-color: #e53935;
-
-    color: white;
-
-    text-decoration: none;
-
-    border-radius: 8px;
-}
-
-.navbar > .logout:hover {
-    background-color: #c62828;
-}
-
-        /* =====================================
-           MAIN CONTENT
-        ===================================== */
-
-        .main-content {
-
-            margin-left: 250px;
-
-            padding: 30px;
-
-            min-height: 100vh;
-
+        .navbar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 220px;
+            height: 100vh;
+            background-color: #0f4c81;
+            padding: 25px 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
         }
-
-
-        /* =====================================
-           FORM CONTAINER
-        ===================================== */
-
-        .form-container {
-
-            background-color: white;
-
-            padding: 30px;
-
-            border-radius: 10px;
-
-            max-width: 750px;
-
+        .logo {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 35px;
         }
-
-
-        h1 {
-
-            color: #0f4c81;
-
-            margin-top: 0;
-
-            margin-bottom: 10px;
-
-        }
-
-
-        .description {
-
-            color: #666;
-
-            margin-bottom: 25px;
-
-        }
-
-
-        /* =====================================
-           MESSAGE
-        ===================================== */
-
-        .message {
-
-            padding: 12px 15px;
-
-            border-radius: 6px;
-
-            margin-bottom: 20px;
-
-            font-weight: bold;
-
-        }
-
-
-        .message.error {
-
-            background-color: #fee2e2;
-
-            color: #b91c1c;
-
-        }
-
-
-        /* =====================================
-           FORM
-        ===================================== */
-
-        label {
-
+        .logo img {
+            width: 150px;
+            height: auto;
             display: block;
-
-            margin-top: 18px;
-
-            margin-bottom: 7px;
-
-            font-weight: bold;
-
-            color: #0f4c81;
-
+        }
+        .menu {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .menu a {
+            width: 180px;
+            margin: 0 auto;
+            padding: 12px 18px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 15px;
+        }    
+        .menu a:hover,
+        .menu a.active {
+            background-color: #1e88e5;
+        }
+        .navbar > .logout {
+            width: 180px;
+            margin-top: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 12px 18px;
+            text-align: center;
+            background-color: #e53935;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
         }
 
-
+        .navbar > .logout:hover {
+            background-color: #c62828;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 750px;
+        }
+        h1 {
+            color: #0f4c81;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .message {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .message.error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #0f4c81;
+        }
         input,
         select,
         textarea {
-
             width: 100%;
-
             padding: 11px;
-
             border: 1px solid #ccc;
-
             border-radius: 6px;
-
             font-size: 14px;
-
         }
-
-
         input:focus,
         select:focus,
         textarea:focus {
-
             outline: none;
-
             border-color: #1e88e5;
-
         }
-
-
         textarea {
-
             min-height: 120px;
-
             resize: vertical;
-
         }
-
-
-        /* =====================================
-           TIME INFO
-        ===================================== */
-
         .time-info {
-
             margin-top: 8px;
-
             padding: 12px;
-
             background-color: #eff6ff;
-
             color: #0f4c81;
-
             border-radius: 6px;
-
             font-size: 13px;
-
             line-height: 1.6;
-
         }
-
-
-        /* =====================================
-           BUTTON
-        ===================================== */
-
         .button-container {
-
             margin-top: 25px;
-
             display: flex;
-
             gap: 10px;
-
         }
-
-
         button {
-
             background-color: #1e88e5;
-
             color: white;
-
             border: none;
-
             padding: 11px 20px;
-
             border-radius: 6px;
-
             cursor: pointer;
-
             font-weight: bold;
-
         }
-
-
         button:hover {
-
             background-color: #0f4c81;
-
         }
-
-
         .back-btn {
-
             display: inline-block;
-
             padding: 11px 20px;
-
             background-color: #64748b;
-
             color: white;
-
             text-decoration: none;
-
             border-radius: 6px;
-
         }
-
-
         .back-btn:hover {
-
             background-color: #475569;
-
         }
-
-
-        /* =====================================
-           RESPONSIVE
-        ===================================== */
 
         @media (max-width: 600px) {
 
@@ -767,7 +522,6 @@ while (
     </style>
 
 </head>
-
 
 <body>
 
@@ -807,11 +561,6 @@ while (
             method="POST"
             id="appointmentForm"
         >
-
-
-            <!-- =================================
-                 STUDENT
-            ================================== -->
 
             <label>
                 Student
@@ -856,11 +605,6 @@ while (
 
             </select>
 
-
-            <!-- =================================
-                 DATE
-            ================================== -->
-
             <label>
                 Appointment Date
             </label>
@@ -871,11 +615,6 @@ while (
                 id="appointment_date"
                 required
             >
-
-
-            <!-- =================================
-                 TIME
-            ================================== -->
 
             <label>
                 Appointment Time
@@ -917,11 +656,6 @@ while (
 
             </div>
 
-
-            <!-- =================================
-                 REASON
-            ================================== -->
-
             <label>
                 Appointment Reason
             </label>
@@ -931,11 +665,6 @@ while (
                 placeholder="Enter appointment reason..."
                 required
             ></textarea>
-
-
-            <!-- =================================
-                 BUTTON
-            ================================== -->
 
             <div class="button-container">
 
@@ -955,22 +684,13 @@ while (
 
             </div>
 
-
         </form>
-
 
     </div>
 
-
 </div>
 
-
 <script>
-
-
-// =========================================
-// EXISTING BOOKED SLOTS
-// =========================================
 
 const bookedSlots =
     <?php
@@ -980,30 +700,17 @@ const bookedSlots =
     );
     ?>;
 
-
-// =========================================
-// DATE INPUT
-// =========================================
-
+    
 const dateInput =
     document.getElementById(
         'appointment_date'
     );
 
 
-// =========================================
-// TIME SELECT
-// =========================================
-
 const timeSelect =
     document.getElementById(
         'appointment_time'
     );
-
-
-// =========================================
-// GET TODAY
-// =========================================
 
 const today =
     new Date();
@@ -1026,10 +733,6 @@ dateInput.min =
     month + '-' +
     day;
 
-
-// =========================================
-// UPDATE TIME SLOTS
-// =========================================
 
 dateInput.addEventListener(
     'change',
@@ -1062,11 +765,6 @@ dateInput.addEventListener(
             return;
         }
 
-
-        // =====================================
-        // GET DAY
-        // =====================================
-
         const date =
             new Date(
                 selectedDate + 'T00:00:00'
@@ -1074,11 +772,6 @@ dateInput.addEventListener(
 
         const dayOfWeek =
             date.getDay();
-
-
-        // =====================================
-        // WEEKEND
-        // =====================================
 
         if (
             dayOfWeek === 0 ||
@@ -1101,11 +794,6 @@ dateInput.addEventListener(
 
             return;
         }
-
-
-        // =====================================
-        // TIME SLOTS
-        // =====================================
 
         let slots = [];
 
@@ -1161,11 +849,6 @@ dateInput.addEventListener(
 
         }
 
-
-        // =====================================
-        // DEFAULT OPTION
-        // =====================================
-
         const defaultOption =
             document.createElement(
                 'option'
@@ -1180,11 +863,6 @@ dateInput.addEventListener(
             defaultOption
         );
 
-
-        // =====================================
-        // CREATE SLOTS
-        // =====================================
-
         slots.forEach(
             function(time) {
 
@@ -1193,12 +871,9 @@ dateInput.addEventListener(
                         'option'
                     );
 
-
                 option.value =
                     time;
 
-
-                // Convert to AM / PM
                 const parts =
                     time.split(':');
 
@@ -1221,11 +896,8 @@ dateInput.addEventListener(
                 if (
                     displayHour === 0
                 ) {
-
                     displayHour = 12;
-
                 }
-
 
                 const displayTime =
                     displayHour +
@@ -1234,8 +906,6 @@ dateInput.addEventListener(
                     ' ' +
                     period;
 
-
-                // Check booked
                 const isBooked =
                     bookedSlots.some(
                         function(slot) {
@@ -1251,24 +921,16 @@ dateInput.addEventListener(
                         }
                     );
 
-
                 if (isBooked) {
-
                     option.textContent =
                         displayTime +
                         ' - BOOKED';
-
                     option.disabled =
                         true;
-
                 } else {
-
                     option.textContent =
                         displayTime;
-
                 }
-
-
                 timeSelect.appendChild(
                     option
                 );
@@ -1280,7 +942,6 @@ dateInput.addEventListener(
 );
 
 </script>
-
 
 </body>
 
