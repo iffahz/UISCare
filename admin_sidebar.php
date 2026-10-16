@@ -55,9 +55,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     object-fit: contain;
 }
 
-
-/* SIDEBAR LINK */
-
 .sidebar a {
     display: block;
     color: white;
@@ -67,23 +64,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
     border-radius: 8px;
 }
 
-
-/* HOVER */
-
 .sidebar a:hover {
     background-color: #1e88e5;
 }
-
-
-/* ACTIVE PAGE */
 
 .sidebar a.active {
     background-color: #1e88e5;
     font-weight: bold;
 }
-
-
-/* LOGOUT */
 
 .sidebar a.logout {
     background-color: #e53935;
